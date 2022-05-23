@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "mt7620a_asus_rt-ac5x.dtsi"
+
+/ {
+	compatible = "asus,rt-ac53", "ralink,mt7620a-soc";
+	model = "Asus RT-AC53";
+
+	rtl8367s {
+		compatible = "realtek,rtl8367c";
+		mii-bus = <&mdio0>;
+
+		cpu_port = <6>;
+		realtek,extif1 = <1 0 1 1 1 1 1 1 2>;
+	};
+};
+
+&gsw {
+	status = "okay";
+	mediatek,port5-gmac;
+	mediatek,ephy-base = /bits/ 8 <8>;
+};
+
+&state_default {
+	gpio {
+		groups = "i2c", "uartf", "ephy", "rgmii2";
+		function = "gpio";
+	};
+};
+
+&ethernet {
+	status = "okay";
+
+	nvmem-cells = <&macaddr_factory_28>;
+	nvmem-cell-names = "mac-address";
+
+	pinctrl-names = "default";
+	pinctrl-0 = <&rgmii1_pins &mdio_pins>;
+
+	port@5 {
+		status = "okay";
+		mediatek,fixed-link = <1000 1 1 1>;
+		phy-mode = "rgmii";
+	};
+
+	mdio0: mdio-bus {
+		status = "okay";
+	};
+};
+
+&pcie0 {
+	wifi@0,0 {
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x8000>;
+		ieee80211-freq-limit = <5000000 6000000>;
+	};
+};
+
+&ehci {
+	status = "disabled";
+};
+
+&ohci {
+	status = "disabled";
+};

@@ -96,6 +96,20 @@ define Device/asus_rt-ac51u
 endef
 TARGET_DEVICES += asus_rt-ac51u
 
+define Device/asus_rt-ac53
+  SOC := mt7620a
+  IMAGE_SIZE := 7872k
+  DEVICE_VENDOR := Asus
+  DEVICE_MODEL := RT-AC53
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size
+  DEVICE_PACKAGES := kmod-mt76x0e kmod-switch-rtl8366-smi \
+	kmod-switch-rtl8367b
+
+  SUPPORTED_DEVICES += rt-ac53
+endef
+TARGET_DEVICES += asus_rt-ac53
+
 define Device/asus_rt-ac54u
   SOC := mt7620a
   IMAGE_SIZE := 16064k
