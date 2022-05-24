@@ -220,6 +220,24 @@ define Device/asus_rt-ac85p
 endef
 TARGET_DEVICES += asus_rt-ac85p
 
+define Device/asus_rt-ax53u
+  $(Device/dsa-migration)
+  $(Device/uimage-lzma-loader)
+  DEVICE_VENDOR := ASUS
+  DEVICE_MODEL := RT-AX53U
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_SIZE := 4096k
+  UBINIZE_OPTS := -E 5
+  IMAGE_SIZE := 128512k
+  IMAGES += firmware.bin
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGE/firmware.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
+	check-size
+  DEVICE_PACKAGES += kmod-mt7915e
+endef
+TARGET_DEVICES += asus_rt-ax53u
+
 define Device/asus_rt-n56u-b1
   $(Device/dsa-migration)
   DEVICE_VENDOR := ASUS
