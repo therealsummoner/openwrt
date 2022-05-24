@@ -6,6 +6,9 @@ board_config_update
 board=$(board_name)
 
 case "$board" in
+asus,rp-ac52)
+	ucidef_set_led_gpio "lights" "Lights" "white:lights" "24" "0"
+	;;
 dlink,dir-510l)
 	ucidef_add_gpio_switch "usb_enable1" "USB 1A enable" "12" "0"
 	ucidef_add_gpio_switch "usb_enable05" "USB 0.5A enable" "13" "1"

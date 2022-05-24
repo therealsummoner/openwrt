@@ -1,0 +1,215 @@
+#include "mt7620a.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/ {
+	compatible = "asus,rp-ac52", "ralink,mt7620a-soc";
+	model = "Asus RP-AC52";
+
+	aliases {
+		label-mac-device = &ethernet;
+		led-boot = &led_power;
+		led-failsafe = &led_power;
+		led-running = &led_power;
+		led-upgrade = &led_power;
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		wps {
+			label = "wps";
+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+
+		reset {
+			label = "reset";
+			gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+		};
+
+/*		audio_jack {
+			label = "audio_jack";
+			gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
+			linux,code = <BTN_0>;
+		};
+*/	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_power: wps {
+			label = "blue:wps";
+			gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+		};
+
+		rssilow-wlan0 {
+			label = "blue:rssilow-wlan0";
+			gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
+		};
+
+		rssimedium-wlan0 {
+			label = "blue:rssimedium-wlan0";
+			gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+		};
+
+		rssihigh-wlan0 {
+			label = "blue:rssihigh-wlan0";
+			gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;
+		};
+
+		rssilow-wlan1 {
+			label = "blue:rssilow-wlan1";
+			gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+		};
+
+		rssimedium-wlan1 {
+			label = "blue:rssimedium-wlan1";
+			gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
+		};
+
+		rssihigh-wlan1 {
+			label = "blue:rssihigh-wlan1";
+			gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
+		};
+
+		lights {
+			label = "white:lights";
+			gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+/*	sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "Audio-I2S";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,bitclock-master = <&cpu_dai_master>;
+		simple-audio-card,frame-master = <&cpu_dai_master>;
+		simple-audio-card,widgets =
+			"Speaker", "Speakers";
+		simple-audio-card,routing =
+			"Speakers", "Speaker";
+
+		cpu_dai_master: simple-audio-card,cpu {
+			sound-dai = <&i2s>;
+		};
+
+		dailink0_master: simple-audio-card,codec {
+			sound-dai = <&codec>;
+		};
+	};
+
+	codec: max98357a {
+		#sound-dai-cells = <0>;
+		compatible = "maxim,max98357a";
+	};
+*/};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+
+		spi-max-frequency = <65000000>;
+		m25p,fast-read;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x0 0x30000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "u-boot-env";
+				reg = <0x30000 0x10000>;
+				read-only;
+			};
+
+			factory: partition@40000 {
+				label = "factory";
+				reg = <0x40000 0x10000>;
+				read-only;
+
+				compatible = "nvmem-cells";
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				macaddr_factory_4: macaddr@4 {
+					reg = <0x4 0x6>;
+				};
+			};
+
+			partition@50000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0x50000 0x7b0000>;
+			};
+		};
+	};
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+/*&gdma {
+	status = "okay";
+};
+
+&i2s {
+	#sound-dai-cells = <0>;
+	status = "okay";
+};
+
+&i2c {
+	status = "okay";
+
+	codec: wm8960@18 {
+		#sound-dai-cells = <0>;
+		compatible = "wlf,wm8960";
+		reg = <0x18>;
+
+		wlf,shared-lrclk;
+	};
+};
+*/
+&state_default {
+	gpio {
+		groups = "pa", "nd_sd", "spi refclk", "rgmii2", "rgmii1", "mdio";
+		function = "gpio";
+	};
+};
+
+&ethernet {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ephy_pins>;
+
+	nvmem-cells = <&macaddr_factory_4>;
+	nvmem-cell-names = "mac-address";
+};
+
+&wmac {
+	ralink,mtd-eeprom = <&factory 0x0>;
+};
+
+&pcie {
+	status = "okay";
+};
+
+&pcie0 {
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		mediatek,mtd-eeprom = <&factory 0x8000>;
+		ieee80211-freq-limit = <5000000 6000000>;
+	};
+};

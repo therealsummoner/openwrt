@@ -23,6 +23,16 @@ alfa-network,tube-e4g)
 	ucidef_set_led_netdev "4g" "4g" "green:4g" "wwan0"
 	ucidef_set_led_netdev "lan" "lan" "blue:lan" "eth0"
 	;;
+asus,rp-ac52)
+	ucidef_set_rssimon "wlan0" "200000" "1"
+	ucidef_set_rssimon "wlan1" "200000" "1"
+	ucidef_set_led_rssi "rssilow-wlan0" "RSSILOW" "blue:rssilow-wlan0" "wlan0" "1" "100"
+	ucidef_set_led_rssi "rssimedium-wlan0" "RSSIMEDIUM" "blue:rssimedium-wlan0" "wlan0" "40" "100"
+	ucidef_set_led_rssi "rssihigh-wlan0" "RSSIHIGH" "blue:rssihigh-wlan0" "wlan0" "70" "100"
+	ucidef_set_led_rssi "rssilow-wlan1" "RSSILOW" "blue:rssilow-wlan1" "wlan1" "1" "100"
+	ucidef_set_led_rssi "rssimedium-wlan1" "RSSIMEDIUM" "blue:rssimedium-wlan1" "wlan1" "40" "100"
+	ucidef_set_led_rssi "rssihigh-wlan1" "RSSIHIGH" "blue:rssihigh-wlan1" "wlan1" "70" "100"
+	;;
 asus,rp-n53)
 	ucidef_set_led_netdev "eth" "Network" "white:back" "eth0"
 	ucidef_set_led_netdev "wifi_led" "wifi" "blue:wifi" "wlan0"

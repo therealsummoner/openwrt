@@ -75,6 +75,18 @@ define Device/amit_jboot
   DEVICE_PACKAGES := jboot-tools kmod-usb2 kmod-usb-ohci
 endef
 
+define Device/asus_rp-ac52
+  SOC := mt7620a
+  BLOCKSIZE := 4k
+  IMAGE_SIZE := 7872k
+  DEVICE_VENDOR := Asus
+  DEVICE_MODEL := RP-AC52
+  DEVICE_PACKAGES := kmod-mt76x0e kmod-ledtrig-gpio rssileds
+	#kmod-sound-core kmod-sound-mt7620 kmod-i2c-ralink snd-soc-max98357a
+  SUPPORTED_DEVICES += rp-ac52
+endef
+TARGET_DEVICES += asus_rp-ac52
+
 define Device/asus_rp-n53
   SOC := mt7620a
   IMAGE_SIZE := 7872k
