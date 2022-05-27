@@ -225,16 +225,31 @@ define Device/asus_rt-ax53u
   $(Device/uimage-lzma-loader)
   DEVICE_VENDOR := ASUS
   DEVICE_MODEL := RT-AX53U
+  DEVICE_DTS := mt7621_asus_rt-ax53u
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_DTS_CONFIG := config@1
   BLOCKSIZE := 128k
   PAGESIZE := 2048
-  KERNEL_SIZE := 4096k
+  KERNEL := kernel-bin | lzma
+#  KERNEL_SIZE := 4096k
+#  IMAGE_SIZE := 51200k
   UBINIZE_OPTS := -E 5
-  IMAGE_SIZE := 128512k
-  IMAGES += firmware.bin
-  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-  IMAGE/firmware.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | \
-	check-size
-  DEVICE_PACKAGES += kmod-mt7915e
+  KERNEL_INITRAMFS := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 128k
+  KERNEL_INITRAMFS_SUFFIX := -recovery.itb
+  IMAGES := sysupgrade.itb
+  IMAGE/sysupgrade.itb := append-kernel | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | \
+	append-metadata
+#  IMAGES += firmware.bin
+#  IMAGE/rootfs.bin := append-ubi | check-size
+#  KERNEL := kernel-bin | lzma | \
+#	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+#  IMAGE/firmware.bin := append-kernel | pad-to $$(KERNEL_SIZE)
+#	append-rootfs | pad-rootfs
+#	append-ubi | check-size
+#  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  DEVICE_PACKAGES += kmod-mt7915e kmod-usb3
 endef
 TARGET_DEVICES += asus_rt-ax53u
 
