@@ -73,14 +73,18 @@
 };
 
 &nand {
-/*	mediatek,nmbm;
-*/	status = "okay";
+	mediatek,nmbm;
+	compatible = "mediatek,nmbm";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	status = "okay";
 
 	flash@0 {
-/*		compatible = "mediatek,nmbm";
+		mediatek,nmbm;
+		compatible = "mediatek,nmbm";
 		#address-cells = <1>;
 		#size-cells = <1>;
-		reg = <0>;
+/*		reg = <0>;
 		nand-ecc-mode = "hw";
 */		partitions {
 			compatible = "fixed-partitions";
@@ -186,13 +190,13 @@
 	};
 };
 
-&state_default {
+/*&state_default {
 	gpio {
 		groups = "i2c", "uart2", "uart3", "jtag", "wdt";
 		function = "gpio";
 	};
 };
-
+*/
 /*&pinctrl {
 	state_default: pinctrl0 {
 		gpio {
