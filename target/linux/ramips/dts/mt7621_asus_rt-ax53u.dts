@@ -84,8 +84,8 @@
 		compatible = "mediatek,nmbm";
 		#address-cells = <1>;
 		#size-cells = <1>;
-/*		reg = <0>;
-		nand-ecc-mode = "hw";
+		reg = <0>;
+/*		nand-ecc-mode = "hw";
 */		partitions {
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
@@ -238,4 +238,12 @@
 	macaddr_factory_a: macaddr@a {
 		reg = <0xa 0x6>;
 	};
+};
+
+&uartlite2 {
+	status = "okay";
+};
+
+&uartlite3 {
+	status = "okay";
 };
