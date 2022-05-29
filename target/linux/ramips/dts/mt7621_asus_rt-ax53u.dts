@@ -43,6 +43,13 @@
 			label = "blue:net";
 			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
 		};
+
+		usb {
+			label = "blue:usb";
+			gpios = <&gpio 22 GPIO_ACTIVE_LOW>;
+			trigger-sources = <&xhci_ehci_port1>, <&ehci_port2>;
+			linux,default-trigger = "usbport";
+		};
 	};
 
 	keys {
@@ -60,36 +67,22 @@
 			linux,code = <KEY_WPS_BUTTON>;
 		};
 	};
-
-	nmbm {
-		compatible = "mediatek,nmbm";
-		#address-cells = <1>;
-		#size-cells = <1>;
-
-		lower-mtd-device = <&nandflash>;
-		forced-create;
-	};
-*/
-};
+*/};
 
 &nand {
-	mediatek,nmbm;
-	compatible = "mediatek,nmbm";
-	#address-cells = <1>;
-	#size-cells = <1>;
 	status = "okay";
 
-	flash@0 {
-		mediatek,nmbm;
-		compatible = "mediatek,nmbm";
+	mediatek,nmbm;
+	mediatek,empty-page-ecc-protected;
+	mediatek,bmt-force-create;
+/*	mediatek,bmt-max-ratio = <1>;
+*/	mediatek,bmt-max-reserved-blocks = <64>;
+
+	partitions {
+		compatible = "fixed-partitions";
 		#address-cells = <1>;
 		#size-cells = <1>;
-		reg = <0>;
-/*		nand-ecc-mode = "hw";
-*/		partitions {
-			compatible = "fixed-partitions";
-			#address-cells = <1>;
-			#size-cells = <1>;
+
 		partition@0 {
 			label = "u-boot";
 			reg = <0x0 0xe0000>;
@@ -120,30 +113,20 @@
 			reg = <0x3e0000 0x3200000>;
 		};
 
-/*		partition@3e0000 {
-			label = "firmware";
-			reg = <0x3e0000 0x400000>;
-		};
-
-		partition@7e0000 {
-			label = "rootfs";
-			reg = <0x7e0000 0x2e00000>;
-		};
-*/
 		partition@35e0000 {
 			label = "kernel2";
 			reg = <0x35e0000 0x3200000>;
+			read-only;
 		};
 
 		partition@67e0000 {
 			label = "jffs2";
 			reg = <0x67e0000 0x1020000>;
+			read-only;
 		};
-
 		/*
-		 * Leave 512 KiB for the bad block table
+		 * Rest 8MB is bad block table
 		 */
-		};
 	};
 };
 
@@ -190,13 +173,13 @@
 	};
 };
 
-/*&state_default {
+&state_default {
 	gpio {
-		groups = "i2c", "uart2", "uart3", "jtag", "wdt";
+		groups = "i2c", "uart2", "uart3", "wdt";
 		function = "gpio";
 	};
 };
-*/
+
 /*&pinctrl {
 	state_default: pinctrl0 {
 		gpio {

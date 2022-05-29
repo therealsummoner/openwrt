@@ -222,33 +222,44 @@ TARGET_DEVICES += asus_rt-ac85p
 
 define Device/asus_rt-ax53u
   $(Device/dsa-migration)
-  $(Device/uimage-lzma-loader)
+#  $(Device/uimage-lzma-loader)
   DEVICE_VENDOR := ASUS
   DEVICE_MODEL := RT-AX53U
+#  UIMAGE_NAME := $$(DEVICE_MODEL)
   DEVICE_DTS := mt7621_asus_rt-ax53u
   DEVICE_DTS_DIR := ../dts
   DEVICE_DTS_CONFIG := config@1
   BLOCKSIZE := 128k
   PAGESIZE := 2048
-  KERNEL := kernel-bin | lzma
+  UIMAGE_MAGIC := 0x27051956
+#  KERNEL := kernel-bin | lzma
 #  KERNEL_SIZE := 4096k
-#  IMAGE_SIZE := 51200k
-  UBINIZE_OPTS := -E 5
-  KERNEL_INITRAMFS := kernel-bin | lzma | \
-	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 128k
-  KERNEL_INITRAMFS_SUFFIX := -recovery.itb
-  IMAGES := sysupgrade.itb
-  IMAGE/sysupgrade.itb := append-kernel | \
-	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | \
-	append-metadata
+  IMAGE_SIZE := 51200k
+#  UBINIZE_OPTS := -E 5
+#  IMAGES += factory.trx
 #  IMAGES += firmware.bin
+#  KERNEL_INITRAMFS := append-kernel | lzma | \
+#	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | pad-to 128k
+#  KERNEL_INITRAMFS_SUFFIX := -recovery.itb
+#  IMAGES := sysupgrade.itb
+#  IMAGE/sysupgrade.itb := append-kernel | \
+#	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb external-static-with-rootfs | \
+#	append-metadata
+  KERNEL := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+#	append-uImage-fakehdr multi $$(UIMAGE_MAGIC)
+#  IMAGE/firmware.bin := append-kernel | uImage none | append-rootfs | pad-rootfs
 #  IMAGE/rootfs.bin := append-ubi | check-size
 #  KERNEL := kernel-bin | lzma | \
 #	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
 #  IMAGE/firmware.bin := append-kernel | pad-to $$(KERNEL_SIZE)
 #	append-rootfs | pad-rootfs
 #	append-ubi | check-size
-#  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+#  IMAGE/sysupgrade.bin := append-uImage-fakehdr multi $$(UIMAGE_MAGIC)
+#  sysupgrade-tar | append-metadata
+
+#  IMAGE/factory.trx := copy-file $(KDIR)/tmp/openwrt-ramips-mt7621-asus_rt-ax53u-squashfs-sysupgrade.bin | uImage none
+#  IMAGE/factory.trx := append-uImage-fakehdr multi $$(UIMAGE_MAGIC) | append-kernel | append-rootfs
   DEVICE_PACKAGES += kmod-mt7915e kmod-usb3
 endef
 TARGET_DEVICES += asus_rt-ax53u
