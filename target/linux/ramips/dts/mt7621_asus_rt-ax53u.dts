@@ -76,7 +76,7 @@
 	mediatek,empty-page-ecc-protected;
 	mediatek,bmt-force-create;
 /*	mediatek,bmt-max-ratio = <1>;
-*/	mediatek,bmt-max-reserved-blocks = <64>;
+*/	mediatek,bmt-max-reserved-blocks = <59>;
 
 	partitions {
 		compatible = "fixed-partitions";
@@ -223,10 +223,11 @@
 	};
 };
 
-&uartlite2 {
+/*&uartlite2 {
 	status = "okay";
 };
 
 &uartlite3 {
 	status = "okay";
 };
+*/
